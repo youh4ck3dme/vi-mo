@@ -1,0 +1,42 @@
+
+<!DOCTYPE html>
+<html lang="sk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VI&MO - Offline</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            background-color: #f7fafc;
+        }
+    </style>
+</head>
+<body class="flex items-center justify-center min-h-screen text-gray-800">
+    <div class="text-center p-8 bg-white shadow-lg rounded-lg max-w-md mx-auto">
+        <svg class="mx-auto h-16 w-16 text-orange-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+        </svg>
+        <h1 class="mt-4 text-3xl font-bold text-gray-900">Ste offline</h1>
+        <p class="mt-2 text-lg text-gray-600">
+            Zdá sa, že momentálne nemáte pripojenie na internet.
+        </p>
+        <p class="mt-4 text-gray-500">
+            Skontrolujte svoje sieťové pripojenie a skúste to znova. Medzitým si môžete prečítať uložené články.
+        </p>
+        <div id="cached-articles" class="mt-6 text-left">
+            <h2 class="text-xl font-semibold mb-2">Dostupné články:</h2>
+            <ul id="cached-articles-list" class="list-disc list-inside text-orange-600">
+                <!-- Zoznam cachovaných článkov bude vložený service workerom -->
+            </ul>
+        </div>
+        <button onclick="window.location.reload()" class="mt-8 inline-block bg-orange-500 text-white font-bold py-3 px-6 rounded-lg hover:bg-orange-600 transition-colors duration-300">
+            Skúsiť znova
+        </button>
+    </div>
+    <script>
+        // Tento skript by mohol načítať a zobraziť zoznam cachovaných URL z IndexedDB alebo Cache Storage
+        // Pre jednoduchosť je tu len základná štruktúra.
+    </script>
+</body>
+</html>
