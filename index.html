@@ -28,9 +28,29 @@
         .fade-in {
             animation: fadeIn 0.5s ease-in-out;
         }
-        /* Custom styles for Tailwind prose overrides */
-        .prose-li:marker:text-orange-500::marker {
-            color: #F97316;
+        /* Custom styles for content injected via dangerouslySetInnerHTML */
+        .prose img {
+            border-radius: 0.5rem;
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+            margin-top: 2rem;
+            margin-bottom: 2rem;
+        }
+        .prose table {
+            width: 100%;
+            margin-top: 2rem;
+            margin-bottom: 2rem;
+            text-align: left;
+            border-collapse: collapse;
+        }
+        .prose th {
+            background-color: #f3f4f6;
+            padding: 0.75rem;
+            font-weight: 700;
+            border: 1px solid #e5e7eb;
+        }
+        .prose td {
+            padding: 0.75rem;
+            border: 1px solid #e5e7eb;
         }
     </style>
 </head>

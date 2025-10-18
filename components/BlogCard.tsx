@@ -8,7 +8,7 @@ interface BlogCardProps {
 
 const BlogCard: React.FC<BlogCardProps> = ({ article }) => {
   return (
-    <div className="bg-white rounded-lg shadow-lg overflow-hidden transition-transform duration-300 hover:scale-105 hover:shadow-xl flex flex-col">
+    <article className="bg-white rounded-lg shadow-lg overflow-hidden transition-transform duration-300 hover:scale-105 hover:shadow-xl flex flex-col">
       <div className="p-6 flex-grow">
         <p className="text-sm text-gray-500 mb-2">
           {article.district} &bull; {new Date(article.datePublished).toLocaleDateString('sk-SK', { day: 'numeric', month: 'long', year: 'numeric' })}
@@ -28,7 +28,7 @@ const BlogCard: React.FC<BlogCardProps> = ({ article }) => {
           Čítať viac <span className="inline-block transition-transform group-hover:translate-x-1">&rarr;</span>
         </Link>
       </div>
-    </div>
+    </article>
   );
 };
 
