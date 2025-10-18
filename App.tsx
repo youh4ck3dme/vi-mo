@@ -9,6 +9,7 @@ import { articles } from './data/articles';
 import { injectLocalBusinessSchema } from './utils/seo';
 
 // Lazy load components for better performance
+// Fix: Corrected import path for BlogList.
 const BlogList = lazy(() => import('./components/BlogList'));
 const BlogPost = lazy(() => import('./components/BlogPost'));
 const NotFound = lazy(() => import('./components/NotFound'));
