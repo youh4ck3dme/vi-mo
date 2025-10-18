@@ -28,6 +28,28 @@
         .fade-in {
             animation: fadeIn 0.5s ease-in-out;
         }
+        @keyframes cardEnter {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        .card-enter {
+            animation: cardEnter 0.5s ease-out forwards;
+        }
+        @keyframes pulse {
+            50% {
+                opacity: .5;
+            }
+        }
+        .animate-pulse {
+            animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+
         /* Custom styles for content injected via dangerouslySetInnerHTML */
         .prose img {
             border-radius: 0.5rem;
