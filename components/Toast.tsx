@@ -1,6 +1,6 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 
-export type ToastType = 'success' | 'error';
+export type ToastType = 'success' | 'error' | 'info' | 'warning';
 
 interface ToastProps {
   message: string;
@@ -9,43 +9,50 @@ interface ToastProps {
   onClose: () => void;
 }
 
-const icons = {
-  success: (
-    <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-    </svg>
-  ),
-  error: (
-    <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-    </svg>
-  ),
-};
-
 const Toast: React.FC<ToastProps> = ({ message, type, isVisible, onClose }) => {
-  const baseClasses = 'fixed bottom-5 left-1/2 -translate-x-1/2 flex items-center gap-4 px-4 sm:px-6 py-3 rounded-lg shadow-2xl text-white font-semibold transition-all duration-300 z-50 w-[90%] sm:w-auto max-w-md';
-  const typeClasses = type === 'success' ? 'bg-green-500' : 'bg-red-500';
-  const visibilityClasses = isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10 pointer-events-none';
-
-  React.useEffect(() => {
+  useEffect(() => {
     if (isVisible) {
       const timer = setTimeout(() => {
         onClose();
-      }, 5000); // Auto-hide after 5 seconds
+      }, 5000);
       return () => clearTimeout(timer);
     }
   }, [isVisible, onClose]);
 
-  if (!message) return null;
+  if (!message || !isVisible) {
+    return null;
+  }
+
+  const baseClasses = 'fixed top-5 right-5 z-50 flex items-center p-4 max-w-xs w-full rounded-lg shadow-lg text-white transition-all duration-300';
+  const typeClasses = {
+    success: 'bg-green-500',
+    error: 'bg-red-500',
+    info: 'bg-blue-500',
+    warning: 'bg-yellow-500',
+  };
+
+  const iconClasses = {
+    success: <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" /></svg>,
+    error: <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" /></svg>,
+    info: <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-11a1 1 0 10-2 0v4a1 1 0 102 0V7zm-1 6a1 1 0 100 2 1 1 0 000-2z" clipRule="evenodd" /></svg>,
+    warning: <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm-1-4a1 1 0 112 0 1 1 0 01-2 0zm-1-8a1 1 0 011-1h.01a1 1 0 110 2H10a1 1 0 01-1-1z" clipRule="evenodd" /></svg>,
+  };
 
   return (
-    <div className={`${baseClasses} ${typeClasses} ${visibilityClasses}`} role="alert">
-      <div className="flex-shrink-0">{icons[type]}</div>
-      <span className="flex-grow text-sm sm:text-base">{message}</span>
-      <button onClick={onClose} aria-label="Zavrieť" className="p-1 rounded-full hover:bg-black/20 transition-colors flex-shrink-0">
-        <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12"></path>
-        </svg>
+    <div
+      className={`${baseClasses} ${typeClasses[type]} ${isVisible ? 'opacity-100 translate-x-0' : 'opacity-0 translate-x-12'}`}
+      role="alert"
+    >
+      <div className="mr-3">{iconClasses[type]}</div>
+      <div className="text-sm font-medium">{message}</div>
+      <button
+        type="button"
+        className="ml-auto -mx-1.5 -my-1.5 bg-white bg-opacity-20 text-white hover:bg-opacity-30 rounded-lg focus:ring-2 focus:ring-white p-1.5 inline-flex h-8 w-8"
+        onClick={onClose}
+        aria-label="Close"
+      >
+        <span className="sr-only">Zatvoriť</span>
+        <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd"></path></svg>
       </button>
     </div>
   );

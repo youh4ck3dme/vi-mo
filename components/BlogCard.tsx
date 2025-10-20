@@ -1,5 +1,4 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
 import { Article } from '../types';
 
 interface BlogCardProps {
@@ -7,28 +6,21 @@ interface BlogCardProps {
 }
 
 const BlogCard: React.FC<BlogCardProps> = ({ article }) => {
+  const snippet = article.content.replace(/<[^>]*>?/gm, '').substring(0, 120) + '...';
+
   return (
-    <article className="bg-white rounded-lg shadow-lg overflow-hidden transition-transform duration-300 hover:scale-105 hover:shadow-xl flex flex-col">
-      <div className="p-6 flex-grow">
-        <p className="text-sm text-gray-500 mb-2">
-          {article.district} &bull; {new Date(article.datePublished).toLocaleDateString('sk-SK', { day: 'numeric', month: 'long', year: 'numeric' })}
-        </p>
-        <h3 className="text-xl font-bold text-gray-800 mb-3 h-20">
-          <Link to={`/blog/${article.slug}`} className="hover:text-orange-600 transition-colors">
-            {article.title}
-          </Link>
-        </h3>
-        <p className="text-gray-600 flex-grow">{article.metaDescription.substring(0, 120)}...</p>
+    <a href={`/#/blog/${article.slug}`} className="group block bg-white dark:bg-slate-800 rounded-lg shadow-md hover:shadow-xl transition-shadow duration-300 overflow-hidden">
+      <div className="relative">
+        <img src={`https://picsum.photos/seed/${article.slug}/400/200`} alt={article.title} className="w-full h-48 object-cover" />
+        <div className="absolute inset-0 bg-black bg-opacity-20 group-hover:bg-opacity-10 transition-colors"></div>
       </div>
-      <div className="p-6 bg-gray-50">
-        <Link 
-          to={`/blog/${article.slug}`} 
-          className="font-semibold text-orange-600 hover:text-orange-700 transition-colors group"
-        >
-          Čítať viac <span className="inline-block transition-transform group-hover:translate-x-1">&rarr;</span>
-        </Link>
+      <div className="p-6">
+        <p className="text-sm text-slate-500 dark:text-slate-400">{article.category} &bull; {new Date(article.datePublished).toLocaleDateString('sk-SK')}</p>
+        <h3 className="mt-2 text-xl font-bold text-brand-dark dark:text-white group-hover:text-brand-teal transition-colors">{article.title}</h3>
+        <p className="mt-3 text-base text-slate-600 dark:text-slate-300">{snippet}</p>
+        <span className="mt-4 inline-block font-semibold text-brand-teal group-hover:underline">Čítať viac &rarr;</span>
       </div>
-    </article>
+    </a>
   );
 };
 

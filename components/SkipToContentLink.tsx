@@ -4,7 +4,7 @@ const SkipToContentLink: React.FC = () => {
   return (
     <a
       href="#main-content"
-      className="sr-only focus:not-sr-only focus:absolute focus:top-0 focus:left-0 focus:z-20 focus:p-4 focus:bg-orange-500 focus:text-white"
+      className="sr-only focus:not-sr-only focus:absolute focus:top-2 focus:left-2 z-50 px-4 py-2 bg-white dark:bg-slate-800 text-brand-teal dark:text-white rounded-md shadow-md"
     >
       Preskočiť na hlavný obsah
     </a>

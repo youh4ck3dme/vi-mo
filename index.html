@@ -5,79 +5,89 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>VI&MO - Sťahovanie a Upratovanie Bratislava</title>
     <meta name="description" content="Váš kompletný sprievodca sťahovaním v Bratislave. Tipy, triky a profesionálne služby od VI&MO pre bezstarostný presun.">
-    <meta name="theme-color" content="#FF6B35">
-    <link rel="manifest" href="/manifest.json">
-    <link rel="apple-touch-icon" href="/images/icons/icon-192x192.png">
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script type="importmap">
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background-color: #f8fafc;
+            color: #0f172a;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+        header {
+            background-color: #003844; /* brand-dark */
+            color: white;
+            padding: 1rem 2rem;
+            text-align: center;
+        }
+        header h1 {
+            margin: 0;
+            font-size: 2rem;
+            color: #35D86D; /* brand-green */
+        }
+        main {
+            flex-grow: 1;
+            padding: 2rem;
+            max-width: 800px;
+            margin: 0 auto;
+            text-align: center;
+        }
+        h2 {
+            color: #003844; /* brand-dark */
+        }
+        p {
+            line-height: 1.6;
+            font-size: 1.1rem;
+        }
+        a.button {
+            display: inline-block;
+            margin-top: 1.5rem;
+            padding: 0.75rem 1.5rem;
+            background-color: #008980; /* brand-teal */
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: bold;
+            transition: background-color 0.3s ease;
+        }
+        a.button:hover {
+            background-color: #005f59;
+        }
+        footer {
+            background-color: #003844; /* brand-dark */
+            color: #cbd5e1;
+            text-align: center;
+            padding: 1rem;
+            margin-top: auto;
+        }
+    </style>
+<script type="importmap">
 {
   "imports": {
     "react": "https://aistudiocdn.com/react@^19.2.0",
-    "react-dom/client": "https://aistudiocdn.com/react-dom@^19.2.0/client",
-    "react-router-dom": "https://aistudiocdn.com/react-router-dom@^7.9.4",
     "react-dom/": "https://aistudiocdn.com/react-dom@^19.2.0/",
-    "react/": "https://aistudiocdn.com/react@^19.2.0/"
+    "react/": "https://aistudiocdn.com/react@^19.2.0/",
+    "react-router-dom": "https://aistudiocdn.com/react-router-dom@^7.9.4",
+    "vite": "https://aistudiocdn.com/vite@^7.1.10",
+    "@vitejs/plugin-react": "https://aistudiocdn.com/@vitejs/plugin-react@^5.0.4",
+    "path": "https://aistudiocdn.com/path@^0.12.7"
   }
 }
 </script>
-    <style>
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
-        .fade-in {
-            animation: fadeIn 0.5s ease-in-out;
-        }
-        @keyframes cardEnter {
-            from {
-                opacity: 0;
-                transform: translateY(20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-        .card-enter {
-            animation: cardEnter 0.5s ease-out forwards;
-        }
-        @keyframes pulse {
-            50% {
-                opacity: .5;
-            }
-        }
-        .animate-pulse {
-            animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
-        }
-
-        /* Custom styles for content injected via dangerouslySetInnerHTML */
-        .prose img {
-            border-radius: 0.5rem;
-            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
-            margin-top: 2rem;
-            margin-bottom: 2rem;
-        }
-        .prose table {
-            width: 100%;
-            margin-top: 2rem;
-            margin-bottom: 2rem;
-            text-align: left;
-            border-collapse: collapse;
-        }
-        .prose th {
-            background-color: #f3f4f6;
-            padding: 0.75rem;
-            font-weight: 700;
-            border: 1px solid #e5e7eb;
-        }
-        .prose td {
-            padding: 0.75rem;
-            border: 1px solid #e5e7eb;
-        }
-    </style>
 </head>
-<body class="bg-gray-50 antialiased">
-    <div id="root"></div>
-    <script type="module" src="/index.tsx"></script>
+<body>
+    <header>
+        <h1>VI&MO</h1>
+    </header>
+    <main>
+        <h2>Sťahovanie a Upratovanie v Bratislave</h2>
+        <p>Vitajte na stránke spoločnosti VI&MO. Špecializujeme sa na profesionálne sťahovacie a upratovacie služby v Bratislave a okolí.</p>
+        <p>Pre viac informácií, cenník a objednávky navštívte našu hlavnú webovú stránku.</p>
+        <a href="https://viandmo.com" class="button" target="_blank" rel="noopener noreferrer">Navštíviť VIandMO.com</a>
+    </main>
+    <footer>
+        <p>&copy; 2024 VI and MO s. r. o. Všetky práva vyhradené.</p>
+    </footer>
 </body>
 </html>

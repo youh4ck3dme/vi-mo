@@ -2,21 +2,23 @@ import React from 'react';
 
 const CallToAction: React.FC = () => {
   return (
-    <div className="bg-orange-500 text-white rounded-lg shadow-lg p-8 md:p-12 text-center max-w-4xl mx-auto">
-      <h2 className="text-3xl md:text-4xl font-bold mb-4">
-        Pripravení na bezstarostné sťahovanie?
-      </h2>
-      <p className="text-lg md:text-xl mb-8 max-w-2xl mx-auto opacity-90">
-        Nechajte ťažkú prácu na nás. Kontaktujte nás ešte dnes pre nezáväznú cenovú ponuku a naplánujte si sťahovanie s profesionálmi.
-      </p>
-      <a
-        href="https://viandmo.com/#kontakt"
-        target="_blank"
-        rel="noopener noreferrer"
-        className="inline-block bg-white text-orange-600 font-bold py-3 px-8 rounded-lg hover:bg-gray-100 transition-all duration-300 transform hover:scale-105 shadow-md"
-      >
-        Získať Ponuku Zdarma
-      </a>
+    <div className="bg-brand-teal rounded-lg shadow-xl overflow-hidden">
+      <div className="p-8 sm:p-12">
+        <h2 className="text-2xl font-extrabold text-white sm:text-3xl">
+          Potrebujete pomôcť so sťahovaním?
+        </h2>
+        <p className="mt-4 text-lg text-teal-100">
+          Sme tu pre vás! Kontaktujte nás pre nezáväznú cenovú ponuku a nechajte starosti na nás.
+        </p>
+        <div className="mt-8">
+          <a
+            href="/#kontakt"
+            className="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md shadow-sm text-brand-teal bg-white hover:bg-teal-50"
+          >
+            Získať ponuku
+          </a>
+        </div>
+      </div>
     </div>
   );
 };

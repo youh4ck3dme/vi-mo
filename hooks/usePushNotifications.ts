@@ -1,103 +1,122 @@
 import { useState, useEffect } from 'react';
-import { urlBase64ToUint8Array } from '../utils/crypto';
 import { VAPID_PUBLIC_KEY } from '../constants';
-import useToast from './useToast';
+import { urlBase64ToUint8Array } from '../utils/crypto';
 
-type PushNotificationState = {
-  isSupported: boolean;
-  isSubscribed: boolean;
-  permission: NotificationPermission;
-  loading: boolean;
-  subscribe: () => Promise<void>;
-  unsubscribe: () => Promise<void>;
-};
+// This function can be expanded to send the subscription to a backend server
+async function saveSubscription(subscription: PushSubscription): Promise<Response> {
+  console.log('Subscription object: ', JSON.stringify(subscription));
+  // In a real app, you'd send this to your server
+  // Example:
+  // return fetch('/api/save-subscription', {
+  //   method: 'POST',
+  //   headers: { 'Content-Type': 'application/json' },
+  //   body: JSON.stringify(subscription),
+  // });
+  return new Promise(resolve => {
+    setTimeout(() => {
+        console.log("Simulating saving subscription to server.");
+        resolve(new Response(null, { status: 201 }));
+    }, 1000);
+  });
+}
 
-const usePushNotifications = (): PushNotificationState => {
-  const { showToast } = useToast();
+const usePushNotifications = () => {
   const [isSupported, setIsSupported] = useState(false);
+  const [userConsent, setUserConsent] = useState<NotificationPermission>('default');
   const [isSubscribed, setIsSubscribed] = useState(false);
-  const [permission, setPermission] = useState<NotificationPermission>('default');
-  const [loading, setLoading] = useState(true); // Start with loading true
+  const [subscription, setSubscription] = useState<PushSubscription | null>(null);
+  const [isSubscriptionLoading, setIsSubscriptionLoading] = useState(true);
 
   useEffect(() => {
     if ('serviceWorker' in navigator && 'PushManager' in window) {
       setIsSupported(true);
-      setPermission(Notification.permission);
+      setUserConsent(Notification.permission);
       
       navigator.serviceWorker.ready.then(registration => {
-        registration.pushManager.getSubscription().then(subscription => {
-          setIsSubscribed(!!subscription);
-          setLoading(false);
-        });
+        return registration.pushManager.getSubscription();
+      }).then(sub => {
+        if (sub) {
+          setIsSubscribed(true);
+          setSubscription(sub);
+        }
+        setIsSubscriptionLoading(false);
       });
     } else {
-        setLoading(false);
+        setIsSubscriptionLoading(false);
     }
   }, []);
 
-  const subscribe = async () => {
-    setLoading(true);
-
-    try {
-      if (!isSupported) {
-        throw new Error('Push notifikácie nie sú podporované v tomto prehliadači.');
-      }
-      
-      const registration = await navigator.serviceWorker.ready;
-      
-      const applicationServerKey = urlBase64ToUint8Array(VAPID_PUBLIC_KEY);
-      const subscription = await registration.pushManager.subscribe({
-        userVisibleOnly: true,
-        applicationServerKey,
-      });
-
-      // TODO: Send subscription to your backend server
-      // await fetch('/api/subscribe', { ... });
-
-      console.log('User is subscribed:', subscription);
-      setIsSubscribed(true);
-      showToast('Úspešne prihlásené na odber noviniek!', 'success');
-    } catch (err) {
-      console.error('Failed to subscribe the user: ', err);
-      const currentPermission = Notification.permission;
-      setPermission(currentPermission);
-      if (currentPermission === 'denied') {
-        showToast('Nepodarilo sa prihlasiť: Notifikácie boli zamietnuté.', 'error');
-      } else {
-        showToast('Prihlásenie zlyhalo. Skúste to prosím znova.', 'error');
-      }
-    } finally {
-      setLoading(false);
+  const subscribeToNotifications = async (): Promise<void> => {
+    if (!isSupported) {
+        throw new Error("Push notifications are not supported by this browser.");
     }
-  };
-  
-  const unsubscribe = async () => {
-    setLoading(true);
+    
+    setIsSubscriptionLoading(true);
+    
+    const consent = await Notification.requestPermission();
+    setUserConsent(consent);
+
+    if (consent !== 'granted') {
+      setIsSubscriptionLoading(false);
+      throw new Error('Permission for notifications was not granted.');
+    }
+
+    const registration = await navigator.serviceWorker.ready;
+    const existingSubscription = await registration.pushManager.getSubscription();
+    
+    if (existingSubscription) {
+        setIsSubscribed(true);
+        setSubscription(existingSubscription);
+        setIsSubscriptionLoading(false);
+        return;
+    }
 
     try {
-      // Fix: Corrected property access from `service-worker` to `serviceWorker`.
-      const registration = await navigator.serviceWorker.ready;
-      const subscription = await registration.pushManager.getSubscription();
-      
-      if (subscription) {
-        const successful = await subscription.unsubscribe();
-        if (successful) {
-          console.log('User is unsubscribed.');
-          setIsSubscribed(false);
-          showToast('Odber noviniek bol úspešne zrušený.', 'success');
-        } else {
-          throw new Error('Unsubscription failed.');
-        }
-      }
-    } catch (err) {
-        console.error('Failed to unsubscribe the user: ', err);
-        showToast('Zrušenie odberu zlyhalo. Skúste to prosím znova.', 'error');
+        const applicationServerKey = urlBase64ToUint8Array(VAPID_PUBLIC_KEY);
+        const newSubscription = await registration.pushManager.subscribe({
+            userVisibleOnly: true,
+            applicationServerKey: applicationServerKey
+        });
+
+        await saveSubscription(newSubscription);
+
+        setSubscription(newSubscription);
+        setIsSubscribed(true);
+    } catch (error) {
+        console.error('Failed to subscribe the user: ', error);
+        throw error;
     } finally {
-        setLoading(false);
+        setIsSubscriptionLoading(false);
     }
   };
 
-  return { isSupported, isSubscribed, permission, loading, subscribe, unsubscribe };
+  const unsubscribeFromNotifications = async (): Promise<void> => {
+    if (!subscription) return;
+    
+    setIsSubscriptionLoading(true);
+    try {
+        await subscription.unsubscribe();
+        // Here you would also call your backend to remove the subscription
+        console.log('Unsubscribed successfully.');
+
+        setSubscription(null);
+        setIsSubscribed(false);
+    } catch (error) {
+        console.error('Error unsubscribing', error);
+        throw error;
+    } finally {
+        setIsSubscriptionLoading(false);
+    }
+  };
+
+  return {
+    isSupported,
+    userConsent,
+    isSubscribed,
+    subscribeToNotifications,
+    unsubscribeFromNotifications,
+    isSubscriptionLoading,
+  };
 };
 
 export default usePushNotifications;

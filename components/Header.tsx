@@ -1,29 +1,49 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
+import { useLocation } from 'react-router-dom';
+import ThemeToggle from './ThemeToggle';
 import NotificationButton from './NotificationButton';
 
 const Header: React.FC = () => {
-  const [isScrolled, setIsScrolled] = useState(false);
+    const location = useLocation();
 
-  useEffect(() => {
-    const handleScroll = () => {
-      setIsScrolled(window.scrollY > 10);
+    const isLinkActive = (path: string) => {
+        const currentPath = location.pathname;
+        if (path === '/') {
+            return currentPath === '/' || currentPath.startsWith('/blog');
+        }
+        return currentPath.startsWith(path);
     };
-    window.addEventListener('scroll', handleScroll);
-    return () => {
-      window.removeEventListener('scroll', handleScroll);
-    };
-  }, []);
 
-  return (
-    <header className={`sticky top-0 z-20 transition-all duration-300 ${isScrolled ? 'bg-white/90 backdrop-blur-sm shadow-md' : 'bg-transparent'}`}>
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center">
-        <a href="/#/" className="text-2xl md:text-3xl font-bold text-gray-800 transition-transform duration-300 hover:scale-105">
-          <span className="text-orange-500">VI</span>&<span className="text-orange-500">MO</span> Blog
-        </a>
-        <NotificationButton />
-      </div>
-    </header>
-  );
+    return (
+        <header className="bg-white dark:bg-slate-900 shadow-md sticky top-0 z-40">
+            <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+                <div className="flex items-center justify-between h-16">
+                    <div className="flex-shrink-0">
+                        <a href="/#/" className="text-2xl font-bold text-brand-teal">
+                            VI&MO
+                        </a>
+                    </div>
+                    <nav className="hidden md:flex items-center space-x-8">
+                        <a href="/#/" className={
+                            `text-base font-medium transition-colors ${isLinkActive('/') ? 'text-brand-teal' : 'text-slate-500 hover:text-brand-dark dark:hover:text-white'}`
+                        }>
+                            Blog
+                        </a>
+                        <a href="https://viandmo.com/#sluzby" target="_blank" rel="noopener noreferrer" className="text-base font-medium text-slate-500 hover:text-brand-dark dark:hover:text-white transition-colors">
+                            Služby
+                        </a>
+                        <a href="https://viandmo.com/#kontakt" target="_blank" rel="noopener noreferrer" className="text-base font-medium text-slate-500 hover:text-brand-dark dark:hover:text-white transition-colors">
+                            Kontakt
+                        </a>
+                    </nav>
+                    <div className="flex items-center gap-4">
+                        <NotificationButton />
+                        <ThemeToggle />
+                    </div>
+                </div>
+            </div>
+        </header>
+    );
 };
 
 export default Header;

@@ -1,73 +1,67 @@
-import React from 'react';
-import { useParams, Link } from 'react-router-dom';
-import { Article } from '../types';
-import { updateBlogPostSeo, cleanupBlogPostSeo } from '../utils/seo';
+// Fix: Implement the BlogPost component to display a single article.
+import React, { useEffect } from 'react';
+import { useArticles } from '../hooks/useArticles';
 import NotFound from './NotFound';
+import BlogPostSkeleton from './BlogPostSkeleton';
+import RelatedArticles from './RelatedArticles.tsx';
 import SocialShare from './SocialShare';
-import RelatedArticles from './RelatedArticles';
 import CallToAction from './CallToAction';
+import { updateBlogPostSeo, cleanupBlogPostSeo } from '../utils/seo';
 
 interface BlogPostProps {
-  articles: Article[];
+  slug: string;
 }
 
-const BlogPost: React.FC<BlogPostProps> = ({ articles }) => {
-  const { slug } = useParams<{ slug: string }>();
-  const article = articles.find((a) => a.slug === slug);
+const BlogPost: React.FC<BlogPostProps> = ({ slug }) => {
+  const { getArticleBySlug, isLoading } = useArticles();
+  const article = getArticleBySlug(slug);
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (article) {
       updateBlogPostSeo(article);
-      window.scrollTo(0, 0);
     }
-    // Cleanup function
+    // Cleanup function to reset SEO tags when the component unmounts
     return () => {
       cleanupBlogPostSeo();
     };
   }, [article]);
 
+  if (isLoading) {
+    return <BlogPostSkeleton />;
+  }
+
   if (!article) {
     return <NotFound />;
   }
-  
-  const canonicalUrl = `https://app.viandmo.com/#/blog/${article.slug}`;
 
   return (
-    <>
-      <article className="max-w-4xl mx-auto bg-white p-6 sm:p-8 lg:p-12 rounded-lg shadow-xl">
-        <header className="mb-8 border-b pb-6">
-            <nav aria-label="breadcrumb" className="text-sm text-gray-500 mb-4">
-                <Link to="/blog" className="hover:text-orange-500">Blog</Link>
-                <span className="mx-2">&gt;</span>
-                <span className="text-gray-700">{article.title}</span>
-            </nav>
-            <h1 className="text-3xl md:text-4xl lg:text-5xl font-extrabold text-gray-900 mb-4">
+    <article>
+      <div className="max-w-4xl mx-auto">
+        <header className="mb-8">
+          <div className="text-sm text-slate-500 dark:text-slate-400 mb-2">
+            <span>{article.category}</span> &bull; <span>{new Date(article.datePublished).toLocaleDateString('sk-SK')}</span>
+          </div>
+          <h1 className="text-3xl font-extrabold text-brand-dark dark:text-white sm:text-4xl md:text-5xl">
             {article.title}
-            </h1>
-            <p className="text-md text-gray-500">
-            Publikované dňa: {new Date(article.datePublished).toLocaleDateString('sk-SK', { day: 'numeric', month: 'long', year: 'numeric' })}
-            &nbsp;&bull;&nbsp;Kategória: {article.category}
-            </p>
+          </h1>
         </header>
 
-        <div
-          className="prose prose-lg max-w-none prose-orange"
+        <div 
+          className="prose prose-lg dark:prose-invert max-w-none prose-img:rounded-lg prose-h2:text-brand-dark dark:prose-h2:text-white prose-h3:text-brand-dark dark:prose-h3:text-white prose-a:text-brand-teal hover:prose-a:text-brand-dark"
           dangerouslySetInnerHTML={{ __html: article.content }}
         />
 
-        <footer className="mt-12 pt-8 border-t">
-          <SocialShare url={canonicalUrl} title={article.title} />
-        </footer>
-      </article>
+        <hr className="my-12 border-slate-200 dark:border-slate-700" />
+        
+        <div className="flex flex-col gap-8">
+            <SocialShare url={window.location.href} title={article.title} />
+            <CallToAction />
+        </div>
 
-      <div className="mt-16">
-        <RelatedArticles currentArticle={article} allArticles={articles} />
       </div>
 
-      <div className="mt-16">
-        <CallToAction />
-      </div>
-    </>
+      <RelatedArticles currentArticleSlug={article.slug} category={article.category} />
+    </article>
   );
 };
 
